@@ -1,6 +1,7 @@
 package internato.projeto.api.Usuario;
 
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +30,9 @@ public class UsuarioController {
 
     @GetMapping
     public ResponseEntity<Page<DadosListagemUsuario>> listar(@PageableDefault(size = 10, sort = {"nome"}) Pageable pageable) {
-        var page = repository.findAll(pageable).stream()
-                .filter(Usuario::getAtivo)
-                .map(DadosListagemUsuario::new)
-                .collect(java.util.stream.Collectors.collectingAndThen(java.util.stream.Collectors.toList(),
-                        list -> new org.springframework.data.domain.PageImpl<>(list, pageable, list.size())));
+        // O filtro de ativos é feito no banco: antes era feito depois da paginação,
+        // o que deixava páginas incompletas e o total de registros errado.
+        var page = repository.findAllByAtivoTrue(pageable).map(DadosListagemUsuario::new);
         return ResponseEntity.ok(page);
     }
 
@@ -55,7 +54,7 @@ public class UsuarioController {
 
     @GetMapping("/{id}")
     public ResponseEntity buscarPorId(@PathVariable Long id) {
-        var usuario = repository.getReferenceById(id);
+        var usuario = repository.findByIdAndAtivoTrue(id).orElseThrow(EntityNotFoundException::new);
         return ResponseEntity.ok(new DadosDetalhamentoUsuario(usuario));
     }
 }

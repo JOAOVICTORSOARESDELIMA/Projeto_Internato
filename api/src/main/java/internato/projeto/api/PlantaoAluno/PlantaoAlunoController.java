@@ -2,6 +2,7 @@ package internato.projeto.api.PlantaoAluno;
 
 
 import internato.projeto.api.Plantao.PlantaoRepository;
+import internato.projeto.api.infra.RegraDeNegocioException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,10 @@ public class PlantaoAlunoController {
         long ocupadas = repository.countByPlantaoId(plantao.getId());
 
         if (ocupadas >= plantao.getVagas()) {
-            return ResponseEntity.badRequest().body("Não há vagas disponíveis neste plantão.");
+            throw new RegraDeNegocioException("Não há vagas disponíveis neste plantão.");
+        }
+        if (repository.existsByPlantaoIdAndAlunoId(dados.idPlantao(), dados.idAluno())) {
+            throw new RegraDeNegocioException("Este aluno já está escalado neste plantão.");
         }
 
         var alocacao = new PlantaoAluno(dados);

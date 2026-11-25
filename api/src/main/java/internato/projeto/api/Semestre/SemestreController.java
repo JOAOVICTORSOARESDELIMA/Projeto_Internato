@@ -1,5 +1,6 @@
 package internato.projeto.api.Semestre;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,10 @@ public class SemestreController {
 
     @GetMapping("/{id}")
     public ResponseEntity findById(@PathVariable Long id) {
-        var semestre = semestreRepository.getReferenceById(id);
+        var semestre = semestreRepository.findByIdAndAtivoTrue(id);
+        if (semestre == null) {
+            throw new EntityNotFoundException();
+        }
         return ResponseEntity.ok(new DadosDetalhamentoSemestre(semestre));
     }
 }
