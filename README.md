@@ -1,4 +1,4 @@
-[![CI](https://github.com/JOAOVICTORSOARESDELIMA/Projeto_Internato/actions/workflows/ci.yml/badge.svg)](https://github.com/JOAOVICTORSOARESDELIMA/Projeto_Internato/actions/workflows/ci.yml)
+[![CI](https://github.com/JOAOVICTORSOARESDELIMA/Projeto_Internato/actions/workflows/ci.yml/badge.svg?branch=Grupo_Main_)](https://github.com/JOAOVICTORSOARESDELIMA/Projeto_Internato/actions/workflows/ci.yml)
 
 # Projeto Internato: API de gestão de plantões
 
